@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+</head>
+<body>
+    <meta charset="UTF-8">
+    {#    <title>{{ title }}</title>#}
+    {% for object in product_list %}
+        <div class="col-lg-4">
+            <div class="card m-2 text-center">
+                <div class="card-body">
+                    {#            <img src="{% static "/media/images/apple.jpg" %}" alt="My image">#}
+                    {% if  object.preview %}
+                        <img src={{ object.preview.url }} class="rounded-circle" alt={{ object.name }} width="140"
+                             height="140">
+                    {% endif %}
+
+                    {#            <img src="{{ object.preview.url }}"  alt="image">#}
+                    {#            <img class="rounded-circle"#}
+                    {#                 src="{% object.preview.url %}"#}
+                    {#                 alt="Generic placeholder image" width="140" height="140">#}
+                    <h2>{{ object.name | title }}</h2>
+                    <p>{{ object.description | title }}</p>
+                    <ul class="list-unstyled mt-3 mb-4 text-start m-3">
+
+                        {% for version in object.version_set.all %}
+                            {% if version.actual_version %}
+
+                                <div><strong>Активная версия: </strong> {{ version.number_of_version }}
+                                    - {{ version.title_of_version }}</div>
+                            {% endif %}
+                        {% endfor %}
+
+                    </ul>
+                    {% if user.is_authenticated %}
+{#                    {% if perms.main.view_product %}#}
+                    <p><a class="btn btn-secondary" href="{% url 'main:product_item' object.pk %}" role="button">Подробнее
+                        >></a></p>
+{#                    {% endif %}#}
+{#                    {% if user.is_authenticated and object.user == user.email %}#}
+{#                    {% if perms.main.change_product %}#}
+{#                    {% if user.email == product.user %}#}
+{#                        {% if object.user == user.email %}#}
+{#                        {% if perms.catalog.change_product and product.object.creator == object.user.email %}#}
+                    {% if user.email == object.user %}
+                    <p><a class="btn btn-warning" href="{% url 'main:product_update' object.pk %}" role="button">Редактировать
+                        >></a></p>
+                    {% endif %}
+{#                    {% endif %}#}
+                    {% if user.is_superuser %}
+                    <p><a class="btn btn-danger" href="{% url 'main:product_delete' object.pk %}" role="button">Удалить>></a></p>
+                    {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    {% endfor %}
+
+
+
+</body>
+</html>
